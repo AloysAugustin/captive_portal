@@ -2,11 +2,12 @@
 
 from flask import Flask, request, redirect, render_template
 import urllib
+import os
 
 app = Flask(__name__)
 
 def login_user(ip):
-    print ip
+    os.system("sudo iptables -I internet 1 -t mangle -s " + ip + " -j RETURN")
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
