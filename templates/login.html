@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="fr-FR">
+<head>
+<title>Authentification</title>
+</head>
+
+<body>
+
+<form method="POST" action="/login?{{ orig_url }}">
+  Login:<br>
+  <input type="text" name="login">
+  <br>
+  Password:<br>
+  <input type="text" name="password">
+  <br><br>
+  <input type="submit" value="Envoyer">
+</form>
+
+</body>
+</html>
