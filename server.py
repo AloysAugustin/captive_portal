@@ -21,13 +21,17 @@ def login():
     else:
         return render_template('login.html', orig_url=urllib.urlencode({'orig_url': request.args.get('orig_url', '')}))
 
+@app.route('/favicon.ico')
+def favicon():
+    return app.send_static_file('favicon.ico')
+
 
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def catch_all(path):
-    return redirect("http://127.0.0.1:5000/login?" + urllib.urlencode({'orig_url': request.url}))
+    return redirect("http://10.20.0.1/login?" + urllib.urlencode({'orig_url': request.url}))
 
 if __name__ == "__main__":
-    app.debug = True
-    app.run()
+#    app.debug = True
+    app.run('0.0.0.0', port=80)
 

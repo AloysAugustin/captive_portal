@@ -1,24 +1,33 @@
 #!/bin/bash
+SESSION=$USER
 
-IPTABLES=/sbin/iptables
+tmux -2 new-session -d -s $SESSION
 
+tmux split-window -h
+tmux select-pane -t 0
 
-$IPTABLES -N internet -t mangle
+tmux send-keys "ifconfig wlan0 hw ether 00:c0:ca:59:e9:d0" C-m
 
-$IPTABLES -t mangle -A PREROUTING -j internet
+sleep 1
 
-$IPTABLES -t mangle -A internet -j MARK --set-mark 99
+tmux send-keys "hostapd hostapd.conf" C-m
 
-$IPTABLES -t nat -A PREROUTING -m mark --mark 99 -p tcp --dport 80 -j DNAT --to-destination 10.0.0.1
+sleep 10
 
-$IPTABLES -t filter -A INPUT -p tcp --dport 80 -j ACCEPT
-$IPTABLES -t filter -A INPUT -p udp --dport 53 -j ACCEPT
-$IPTABLES -t filter -A INPUT -m mark --mark 99 -j DROP
+tmux select-pane -t 1
 
-echo "1" > /proc/sys/net/ipv4/ip_forward
+tmux send-keys "ifconfig wlan0 10.20.0.1/24 up" C-m
 
-$IPTABLES -A FORWARD -i eth0 -o wlan0 -m state --state ESTABLISHED,RELATED -j ACCEPT
-$IPTABLES -A FORWARD -i wlan0 -o eth0 -j ACCEPT
-$IPTABLES -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
+sleep 1
 
-python server.py
+tmux send-keys "ifconfig wlan1 10.21.0.1/24 up" C-m
+
+sleep 1
+
+tmux send-keys "dnsmasq -d -C dnsmasq.conf" C-m
+
+tmux split-window -v
+
+tmux send-keys "./firewall.sh" C-m
+tmux send-keys "python server.py" C-m 
+
