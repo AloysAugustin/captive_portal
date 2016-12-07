@@ -12,4 +12,5 @@ in a tmux (useful for debugging)
 
 ### Bugs
 
-For now this system does not detect the disconnection of an user
+- For now this system does not detect the disconnection of an user. It should retrieve this info from dnsmasq (releases or state file?), or even better, hostapd (but then it gets only L2 info).
+- This doesn't support IPv6.
